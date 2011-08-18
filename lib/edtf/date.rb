@@ -4,14 +4,19 @@ module EDTF
 
   module ExtendedDate
     
+    LONG_MONTHS = [1, 3, 5, 7, 8, 10, 12].freeze
+    SHORT_MONTHS = [4, 6, 9, 11].freeze
+
     extend Forwardable
     
     include Seasons
     
     attr_accessor :calendar
     
-    attr_reader :precision
-        
+    def precision
+    	@precision ||= :day
+    end
+    
     def precision=(precision)
       raise ArgumentError, "invalid precision #{precision.inspect}" unless PRECISIONS.include?(precision.to_sym)
       @precision = precision.to_sym
@@ -92,9 +97,8 @@ module EDTF
       "TODO"
     end
 
-    # TODO take precision into account
     def next
-      super
+    	send("next_#{precision}")
     end
     
     def values
@@ -110,6 +114,30 @@ module EDTF
     
     alias -@ negate
     
+    def last_day_of_month
+    	case
+    	when LONG_MONTHS.include?(month)
+    		31
+    	when SHORT_MONTHS.include?(month)
+    		30
+    	when leap?
+    		29
+    	else
+    		28
+    	end
+    end
+    
+    def last_day_of_month?
+    	day == last_day_of_month
+    end
+    
+    def last_month_of_year
+    	12
+    end
+    
+    def last_month_of_year?
+    	month == 12
+    end
     
     private
     

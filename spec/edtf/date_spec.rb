@@ -34,6 +34,62 @@ describe 'Date/DateTime' do
     end 
   end
   
+  describe '#last_day_of_month' do
+  
+  	[[:March, 3, 31], [:August, 8, 31], [:September, 9, 30]].each do |x|
+			describe "when the month is #{x[0]}" do
+	
+				let(:date) { Date.new(2008, x[1]) }
+				
+				it "should return #{x[2]}" do
+					date.last_day_of_month.should == x[2]
+				end
+			end
+		end
+		
+		describe 'when the month is February of a leap year' do
+			let(:date) { Date.new(2008, 2) }
+			
+			it 'should return 29' do
+				date.last_day_of_month.should == 29
+			end			
+		end
+		
+		describe 'when the month is February of a non-leap year' do
+			let(:date) { Date.new(2009, 2) }
+			
+			it 'should return 28' do
+				date.last_day_of_month.should == 28
+			end			
+		end
+  end
+  
+  describe '#last_day_of_month?' do
+  	it 'should return true for the 30th of November' do
+  		Date.new(2008, 11, 30).should be_last_day_of_month
+  	end
+  	
+  	it 'should return false for the 12th of May' do
+  		Date.new(2008, 05, 12).should_not be_last_day_of_month
+  	end
+  end
+  
+  describe '#last_month_of_year' do
+		it 'should return 12' do
+			Date.new.last_month_of_year.should be 12
+		end
+  end
+  
+  describe '#last_month_of_year?' do
+  	it 'should return true for December' do
+  		Date.new(2008, 12).should be_last_month_of_year
+  	end
+  	
+  	it 'should return false for August' do
+  		Date.new(2008, 8).should_not be_last_month_of_year
+  	end
+  end
+
   describe '#uncertain?' do
     
     let(:date) { Date.new }
